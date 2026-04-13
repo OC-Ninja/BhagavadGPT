@@ -1,4 +1,4 @@
-# 🕉️ BhagvadGPT - Spiritual AI Companion
+#  BhagvadGPT 
 
 BhagvadGPT is an AI-powered spiritual companion that provides wisdom and guidance based on the teachings of the Bhagavad Gita. Built with modern RAG (Retrieval-Augmented Generation) technology, it retrieves relevant verses from the sacred text and provides personalized spiritual guidance.
 
@@ -7,17 +7,17 @@ BhagvadGPT is an AI-powered spiritual companion that provides wisdom and guidanc
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 ![Node](https://img.shields.io/badge/Node-20+-green)
 
-## ✨ Features
+##  Features
 
-- 🎯 **RAG-Powered Responses**: Retrieves relevant verses from the Bhagavad Gita using ChromaDB vector database
-- 🤖 **AI-Driven Guidance**: Uses Groq's Llama 3.3 70B model for intelligent, contextual responses
-- 🎨 **Custom UI**: Beautiful saffron-themed interface with "Radhe Radhe" greeting
-- 🔐 **Google OAuth**: Secure authentication with Google Sign-In
-- 💬 **Modern Chat Interface**: Built on LibreChat for a seamless user experience
-- 🐳 **Docker Support**: Easy deployment with Docker Compose
-- 📚 **Complete Gita Database**: All 700+ verses with Sanskrit, translations, and meanings
+- **RAG-Powered Responses**: Retrieves relevant verses from the Bhagavad Gita using ChromaDB vector database
+-  **AI-Driven Guidance**: Uses Groq's Llama 3.3 70B model for intelligent, contextual responses
+-  **Custom UI**: Beautiful saffron-themed interface with "Radhe Radhe" greeting
+-  **Google OAuth**: Secure authentication with Google Sign-In
+-  **Modern Chat Interface**: Built on LibreChat for a seamless user experience
+- **Docker Support**: Easy deployment with Docker Compose
+-  **Complete Gita Database**: All 700+ verses with Sanskrit, translations, and meanings
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -42,7 +42,7 @@ BhagvadGPT is an AI-powered spiritual companion that provides wisdom and guidanc
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -124,7 +124,7 @@ docker-compose up -d
 
 The application will be available at `http://localhost:3080`
 
-## 🔑 Getting API Keys
+##  Getting API Keys
 
 ### Groq API Key (Required)
 
@@ -142,7 +142,7 @@ The application will be available at `http://localhost:3080`
 5. Add authorized redirect URI: `http://localhost:3080/oauth/google/callback`
 6. Copy Client ID and Client Secret to `BhagvadGPT-frontend/.env`
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 BhagavadGPT/
@@ -164,7 +164,7 @@ BhagavadGPT/
 └── README.md
 ```
 
-## 🎨 Customization
+##  Customization
 
 The interface is customized with:
 - **Saffron theme** (#FFF4E6 background, #FF9933 accents)
@@ -174,7 +174,7 @@ The interface is customized with:
 
 Configuration is in `BhagvadGPT-frontend/librechat.yaml`
 
-## 🐳 Docker Deployment
+##  Docker Deployment
 
 ### Development
 
@@ -188,7 +188,7 @@ docker-compose up
 docker-compose -f docker-compose.yml up -d
 ```
 
-## 🌐 Deployment Options
+##  Deployment Options
 
 ### Recommended Platforms:
 
@@ -217,7 +217,7 @@ npm install
 npm run frontend:dev
 ```
 
-## 📝 API Documentation
+##  API Documentation
 
 Once the backend is running, visit:
 - Swagger UI: `http://localhost:8000/docs`
@@ -240,7 +240,7 @@ Once the backend is running, visit:
 }
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -250,11 +250,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **Bhagavad Gita** - The sacred text that powers this application
 - **LibreChat** - For the amazing chat interface framework
@@ -272,4 +272,3 @@ Project Link: [https://github.com/himanshupdev123/BhagavadGPT](https://github.co
 
 **Radhe Radhe! 🙏**
 
-*May this tool help you find peace and wisdom in the teachings of the Bhagavad Gita.*
