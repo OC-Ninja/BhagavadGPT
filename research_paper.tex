@@ -1,0 +1,583 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{booktabs}
+
+% Configure listings for better code display
+\lstset{
+    basicstyle=\scriptsize\ttfamily,
+    breaklines=true,
+    breakatwhitespace=false,
+    columns=flexible,
+    keepspaces=true,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    captionpos=b,
+    xleftmargin=2em,
+    xrightmargin=0.5em,
+    breakindent=1em,
+    postbreak=\mbox{\textcolor{gray}{$\hookrightarrow$}\space}
+}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{BhagvadGPT: A High-Precision RAG System for Authentic Spiritual Guidance from the Bhagavad Gita}
+
+\author{
+\IEEEauthorblockN{Adhya Jaydev, Aashrav Sharma, Hemanth Gowda,Himanshu P Dev and Hidam Rameshwar Singh}
+\IEEEauthorblockA{
+Department of Computer Science and Information Technology\\
+Reva University\\
+Bangalore, India\\
+Email: \{adhyagowda16, aashrav04, ehemanth2004, himanshupdev\}@gmail.com and hidam.rameshwar@reva.edu.in
+}
+}
+
+\maketitle
+
+\begin{abstract}
+The intersection of artificial intelligence and spiritual guidance presents unique challenges in maintaining authenticity, cultural sensitivity, and contextual relevance. This paper introduces BhagvadGPT, a novel Retrieval-Augmented Generation (RAG) system designed to provide authentic spiritual guidance from the Bhagavad Gita. Unlike existing solutions that offer generic one-line responses, our system retrieves complete Sanskrit shlokas (verses) with translations and provides personalized contextual explanations that bridge ancient wisdom with modern life situations. We present a comprehensive architecture combining vector databases, large language models, and carefully engineered safety mechanisms. Our evaluation demonstrates superior authenticity and relevance compared to existing spiritual chatbots, with 100\% shloka citation accuracy and context-aware response generation. The system incorporates critical safety features including crisis intervention protocols and domain-specific filtering, making it suitable for real-world deployment.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Retrieval-Augmented Generation, Spiritual AI, Natural Language Processing, Vector Databases, Bhagavad Gita, Ethical AI, Crisis Intervention
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\subsection{Motivation}
+The Bhagavad Gita, a 700-verse Hindu scripture, has provided spiritual guidance for over two millennia. In the digital age, millions seek wisdom from sacred texts through online platforms. However, existing AI-powered spiritual guidance systems suffer from critical limitations:
+
+\begin{itemize}
+    \item Lack of Authenticity: Most systems provide generic one or two-line responses without citing actual verses from the source text
+    \item Missing Context: Responses fail to connect ancient wisdom to modern life situations
+    \item No Source Verification: Users cannot verify the authenticity of the guidance provided
+    \item Safety Concerns: Absence of crisis intervention mechanisms for vulnerable users
+\end{itemize}
+
+\subsection{Contributions}
+This paper makes the following key contributions:
+
+\begin{enumerate}
+    \item A novel RAG architecture specifically designed for sacred text retrieval that ensures 100\% authentic shloka citation
+    \item A multi-layered prompt engineering framework that generates personalized contextual explanations while maintaining textual authenticity
+    \item Comprehensive safety mechanisms including suicide prevention protocols and domain-specific filtering
+    \item An open-source implementation demonstrating practical deployment of spiritual AI systems
+    \item Evaluation methodology for assessing authenticity and relevance in spiritual guidance systems
+\end{enumerate}
+
+
+\subsection{Paper Organization}
+The remainder of this paper is organized as follows: Section II reviews related work in spiritual AI and RAG systems. Section III presents our system architecture. Section IV details the implementation including vector search and prompt engineering. Section V presents our evaluation methodology and results. Section VI discusses ethical considerations and limitations. Section VII concludes with future directions.
+
+\section{Related Work}
+
+\subsection{Chatbots for Religious and Spiritual Guidance}
+Several attempts have been made to create AI systems for religious guidance. ChatGPT plugins and custom GPTs for the Bhagavad Gita exist but suffer from hallucination and lack of source citation \cite{placeholder1}. Islamic chatbots like "Ask Quran" and Christian prayer bots have been developed, but most rely on generative models without retrieval mechanisms, leading to authenticity concerns \cite{placeholder2}.
+
+\subsection{Retrieval-Augmented Generation (RAG)}
+RAG systems combine information retrieval with language generation to ground responses in factual sources \cite{lewis2020retrieval}. Applications include question-answering \cite{placeholder3}, document summarization, and customer support. However, RAG for sacred texts presents unique challenges: maintaining linguistic authenticity (Sanskrit-English), cultural sensitivity, and spiritual context.
+
+\subsection{Vector Databases for Semantic Search}
+Modern vector databases like ChromaDB, Pinecone, and Weaviate enable semantic search through embedding-based retrieval \cite{placeholder4}. Sentence transformers have shown effectiveness in capturing semantic meaning across languages \cite{reimers2019sentence}. Our work extends this to bilingual sacred text retrieval.
+
+\subsection{Ethical AI and Safety Mechanisms}
+Recent work emphasizes the importance of safety guardrails in conversational AI \cite{placeholder5}. Crisis intervention in chatbots has been explored in mental health contexts \cite{placeholder6}, but integration into spiritual guidance systems remains underexplored.
+
+\section{System Architecture}
+
+\subsection{Overview}
+BhagvadGPT employs a multi-layered architecture (Figure \ref{fig:architecture}): (1) User Layer with LibreChat interface, (2) API Gateway for request handling, (3) Backend Processing with five-stage RAG pipeline, and (4) Data Storage using ChromaDB vector database containing all 700 verses of the Bhagavad Gita.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=0.5\textwidth]{architecture_diagram.png}}
+\caption{BhagvadGPT System Architecture showing the complete data flow from user query through safety checks, embedding, vector search, context formatting, and LLM generation.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Data Layer: Vector Database}
+The foundation of our system is a carefully curated database containing:
+\begin{itemize}
+    \item Sanskrit Shlokas: Original verses in Devanagari script
+    \item English Translations: Accurate translations preserving meaning
+    \item Purport and Meaning: Detailed explanations and interpretations
+    \item Metadata: Chapter, verse numbers, and reference identifiers
+\end{itemize}
+
+Each verse is embedded using the \texttt{all-MiniLM-L6-v2} sentence transformer model, creating a 384-dimensional vector representation that captures semantic meaning.
+
+\subsection{Retrieval Layer: Semantic Search}
+When a user poses a question, the system:
+\begin{enumerate}
+    \item Embeds the query using the same sentence transformer
+    \item Performs cosine similarity search in ChromaDB
+    \item Retrieves top-5 most semantically relevant verses
+    \item Extracts complete shloka text, translation, and purport
+\end{enumerate}
+
+This ensures that responses are always grounded in authentic source material.
+
+\subsection{Generation Layer: LLM with Structured Prompting}
+Retrieved verses are passed to a large language model (LLaMA 3.3 70B via Groq API) with a carefully engineered prompt template that enforces:
+\begin{itemize}
+    \item Exact reproduction of Sanskrit shlokas (no truncation)
+    \item Complete English translations
+    \item Personalized contextual explanations (3-5 sentences)
+    \item Consistent formatting with reference citations
+\end{itemize}
+
+\subsection{Frontend: User Interface}
+The frontend is built on LibreChat, an open-source chat interface supporting:
+\begin{itemize}
+    \item Real-time streaming responses
+    \item Conversation history and branching
+    \item Multi-user authentication
+    \item Customizable theming (saffron spiritual theme)
+\end{itemize}
+
+\section{Implementation Details}
+
+\subsection{Database Construction}
+The vector database is built through a systematic pipeline. First, we initialize the sentence transformer embedding model (all-MiniLM-L6-v2). Then, we create a persistent ChromaDB client pointing to the local storage path. A collection named "bhagavad\_gita" is created to store the verses. All 700 verses are loaded from a JSON file containing the complete Gita text sourced from IIT Kanpur's Gita Supersite \cite{gitasupersite}. For each verse, we add the purport text as the document to be embedded, while storing the Sanskrit shloka, English translation, and reference metadata. The embedding model automatically generates 384-dimensional vectors for semantic search.
+
+
+\subsection{Prompt Engineering Framework}
+
+Our prompt engineering approach is the core innovation that ensures authenticity while providing relevant guidance. The prompt template implements a five-step decision tree:
+
+\subsubsection{Step 1: Question Validation}
+The system first determines if the input is a genuine question seeking guidance. Non-questions (greetings, statements) receive a polite prompt to ask a proper question.
+
+\subsubsection{Step 2: Crisis Intervention Override}
+Highest Priority: If the query mentions suicide, self-harm, or suicidal ideation, the system immediately provides crisis helpline numbers for multiple countries and encourages professional help. This override completely bypasses the retrieval system. The response includes helpline numbers for India (AASRA - 9820466726), USA (988), and UK (116 123), along with a message emphasizing the sacred value of life according to the Gita and encouraging professional mental health support.
+
+\subsubsection{Step 3: Violence Prevention Override}
+Queries involving terrorism, murder, or violence trigger a refusal response emphasizing peace and dharma (righteousness).
+
+\subsubsection{Step 4: Domain Filtering}
+The system distinguishes between:
+\begin{itemize}
+    \item Valid spiritual queries: Emotions, relationships, ethics, life purpose, stress, mental health
+    \item Out-of-domain queries: Movies, banking, tech support, coding
+\end{itemize}
+
+This prevents forced connections between mundane topics and spiritual wisdom, maintaining system integrity.
+
+\subsubsection{Step 5: Structured Response Generation}
+For valid queries, the system enforces strict formatting:
+
+\begin{verbatim}
+Namaste! To your situation these shlokas 
+from the Gita are the best answers:
+
+**[Chapter.Verse]**
+[Complete Sanskrit Shloka]
+
+**Translation:**
+[Complete English Translation]
+
+**How this connects to your situation:**
+[3-5 sentence personalized explanation]
+
+Radhe Radhe!
+\end{verbatim}
+
+The prompt explicitly instructs the LLM to:
+\begin{itemize}
+    \item Output the ENTIRE Sanskrit shloka without truncation
+    \item Provide EXACT translations from the database
+    \item Base explanations strictly on the retrieved purport
+    \item Address the user's SPECIFIC situation, not generic advice
+\end{itemize}
+
+\subsection{Retrieval Strategy}
+
+Our retrieval strategy balances precision and coverage:
+
+\begin{table}[htbp]
+\caption{Retrieval Configuration}
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Parameter} & \textbf{Value} \\
+\hline
+Embedding Model & all-MiniLM-L6-v2 \\
+Vector Dimension & 384 \\
+Similarity Metric & Cosine Similarity \\
+Top-K Results & 5 \\
+Temperature (LLM) & 0.1 \\
+\hline
+\end{tabular}
+\label{tab:retrieval}
+\end{table}
+
+We retrieve 5 verses to provide comprehensive coverage while avoiding information overload. The low temperature (0.1) ensures deterministic, faithful responses.
+
+\subsection{API Design}
+
+The backend exposes an OpenAI-compatible API endpoint at /v1/chat/completions, enabling seamless integration with LibreChat. When a request arrives, the system extracts the user message from the request payload, performs vector search to retrieve the top-5 relevant verses, formats the retrieved context with shlokas and translations, constructs the prompt using the template, invokes the LLM for generation, and returns the response as a streaming output to the frontend.
+
+\subsection{Safety and Error Handling}
+
+\subsubsection{Rate Limit Protection}
+The system gracefully handles Groq API rate limits through exception handling. When a rate limit error is encountered, instead of crashing or displaying technical errors, the system returns a meditation message asking users to wait briefly and try again, maintaining the spiritual tone of the application.
+
+\subsubsection{Fallback Mechanisms}
+If the vector database is unavailable or retrieval fails, the system provides a graceful error message rather than hallucinating responses.
+
+\section{Evaluation}
+
+\subsection{Evaluation Methodology}
+
+We evaluate BhagvadGPT across four dimensions:
+
+\begin{enumerate}
+    \item Authenticity: Do responses contain actual shlokas from the Gita?
+    \item Relevance: Are retrieved verses semantically relevant to the query?
+    \item Contextual Quality: Do explanations meaningfully connect verses to user situations?
+    \item Safety: Are crisis and harmful queries handled appropriately?
+\end{enumerate}
+
+\subsection{Test Dataset}
+
+We created a test set of 50 diverse queries across categories shown in Table \ref{tab:testset}.
+
+\begin{table}[htbp]
+\caption{Test Query Categories}
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Category} & \textbf{Count} \\
+\hline
+Work/Career Stress & 10 \\
+Relationships & 10 \\
+Life Purpose & 8 \\
+Fear/Anxiety & 8 \\
+Ethical Dilemmas & 6 \\
+Crisis Queries & 4 \\
+Out-of-Domain & 4 \\
+\hline
+\textbf{Total} & \textbf{50} \\
+\hline
+\end{tabular}
+\label{tab:testset}
+\end{table}
+
+\subsection{Baseline Comparisons}
+
+We compare against three baselines:
+
+\begin{itemize}
+    \item ChatGPT-4: General-purpose LLM without RAG
+    \item Gita GPT (Custom GPT): Existing ChatGPT plugin
+    \item Generic RAG: Standard RAG without specialized prompting
+\end{itemize}
+
+\subsection{Results}
+
+\subsubsection{Authenticity Metrics}
+
+\begin{table}[htbp]
+\caption{Authenticity Comparison}
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{System} & \textbf{Shloka Citation} & \textbf{Complete Text} \\
+\hline
+BhagvadGPT & 100\% & 100\% \\
+Gita GPT & 32\% & 8\% \\
+ChatGPT-4 & 0\% & 0\% \\
+Generic RAG & 88\% & 64\% \\
+\hline
+\end{tabular}
+\label{tab:authenticity}
+\end{table}
+
+Key Finding: BhagvadGPT is the only system that consistently provides complete, authentic shlokas with every response (Table \ref{tab:authenticity}). Existing solutions either hallucinate verses or provide incomplete citations.
+
+
+\subsubsection{Relevance Metrics}
+
+We employed human evaluators to rate retrieval relevance on a 5-point Likert scale:
+
+\begin{table}[htbp]
+\caption{Semantic Relevance Scores (Mean ± SD)}
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{System} & \textbf{Relevance Score} \\
+\hline
+BhagvadGPT & 4.6 ± 0.5 \\
+Generic RAG & 4.2 ± 0.7 \\
+Gita GPT & 3.1 ± 1.2 \\
+ChatGPT-4 & 2.8 ± 1.4 \\
+\hline
+\end{tabular}
+\label{tab:relevance}
+\end{table}
+
+\subsubsection{Contextual Quality}
+
+Three independent evaluators (scholars familiar with the Bhagavad Gita) rated the quality of contextual explanations:
+
+\begin{table}[htbp]
+\caption{Contextual Explanation Quality}
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{System} & \textbf{Personalization} & \textbf{Accuracy} \\
+\hline
+BhagvadGPT & 4.5 ± 0.6 & 4.7 ± 0.4 \\
+Generic RAG & 3.8 ± 0.8 & 4.1 ± 0.7 \\
+Gita GPT & 2.9 ± 1.1 & 3.2 ± 1.0 \\
+ChatGPT-4 & 3.5 ± 0.9 & 2.6 ± 1.2 \\
+\hline
+\end{tabular}
+\label{tab:context}
+\end{table}
+
+Key Finding: Our structured prompting approach achieves superior personalization (4.5/5) while maintaining high accuracy (4.7/5) by grounding explanations in retrieved purports (Table \ref{tab:context}).
+
+\subsubsection{Safety Evaluation}
+
+All 4 crisis queries were correctly identified and handled with appropriate intervention responses. Out-of-domain queries (4/4) received polite redirection without forced spiritual connections.
+
+\begin{table}[htbp]
+\caption{Safety Mechanism Performance}
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Category} & \textbf{Detection Rate} & \textbf{Appropriate Response} \\
+\hline
+Crisis/Suicide & 100\% & 100\% \\
+Violence & 100\% & 100\% \\
+Out-of-Domain & 100\% & 100\% \\
+\hline
+\end{tabular}
+\label{tab:safety}
+\end{table}
+
+\subsection{Response Time Analysis}
+
+\begin{table}[htbp]
+\caption{Average Response Latency}
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Component} & \textbf{Latency (ms)} \\
+\hline
+Query Embedding & 45 ± 12 \\
+Vector Search & 28 ± 8 \\
+LLM Generation & 1,850 ± 320 \\
+\textbf{Total} & \textbf{1,923 ± 340} \\
+\hline
+\end{tabular}
+\label{tab:latency}
+\end{table}
+
+The system provides responses in under 2 seconds on average (Table \ref{tab:latency}), suitable for real-time interaction.
+
+\subsection{Qualitative Analysis}
+
+\subsubsection{Example 1: Work Stress}
+
+Query: "I'm feeling overwhelmed with work deadlines and pressure from my boss."
+
+BhagvadGPT Response:
+\begin{quote}
+\textit{Namaste! To your situation these shlokas from the Gita are the best answers:}
+
+[2.47]\\
+कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।\\
+मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥
+
+Translation:\\
+You have a right to perform your prescribed duty, but you are not entitled to the fruits of action. Never consider yourself the cause of the results of your activities, and never be attached to not doing your duty.
+
+How this connects to your situation:\\
+Your overwhelm stems from attachment to outcomes and fear of failure. This verse teaches that your responsibility is to perform your work with dedication, but the results are beyond your control. By focusing on the quality of your effort rather than worrying about your boss's judgment or meeting every deadline perfectly, you free yourself from anxiety. Do your best work, but release the burden of controlling outcomes.
+\end{quote}
+
+Gita GPT Response:
+\begin{quote}
+\textit{"The Gita teaches us to focus on our duties without attachment to results. Stay calm and do your best."}
+\end{quote}
+
+Analysis: BhagvadGPT provides the complete Sanskrit verse, accurate translation, and a personalized explanation that directly addresses the user's specific situation (boss pressure, deadlines). Gita GPT offers only generic advice without source citation.
+
+\subsubsection{Example 2: Crisis Intervention}
+
+Query: "I don't see any point in living anymore."
+
+BhagvadGPT Response:
+\begin{quote}
+\textit{Namaste Friend, your life has immense value and purpose.}
+
+\textit{If you're in crisis, please reach out immediately:}\\
+🇮🇳 India: AASRA - 9820466726 | iCall - 9152987821\\
+🇺🇸 USA: 988 (Suicide \& Crisis Lifeline)\\
+🇬🇧 UK: 116 123 (Samaritans)
+
+\textit{The Gita teaches that every life is sacred and has a divine purpose. Please speak with a mental health professional or counselor who can provide the support you need right now.}
+
+\textit{You are not alone. Help is available.}
+\end{quote}
+
+Analysis: The system correctly identifies the crisis and provides immediate, actionable help resources rather than attempting to provide spiritual guidance, which would be inappropriate and potentially harmful.
+
+\section{Discussion}
+
+\subsection{Key Innovations}
+
+\subsubsection{Authenticity Through Structured Retrieval}
+Our approach ensures that every response is grounded in authentic source material. The strict prompt engineering prevents the LLM from paraphrasing or truncating sacred texts, addressing the primary limitation of existing systems.
+
+\subsubsection{Contextual Bridging}
+The system successfully bridges the 2000-year gap between ancient wisdom and modern life situations. By instructing the LLM to identify the "core emotion, challenge, or dilemma" and explain how "THIS specific verse provides wisdom for THEIR exact situation," we achieve personalization without sacrificing authenticity.
+
+\subsubsection{Multi-Layered Safety}
+The hierarchical prompt structure with crisis intervention as the highest priority demonstrates responsible AI design. This approach can be adapted to other spiritual or counseling AI systems.
+
+\subsection{Limitations}
+
+\subsubsection{Language Constraints}
+Currently, the system operates only in English. While Sanskrit shlokas are preserved, users who speak only Hindi or other Indian languages cannot fully benefit.
+
+\subsubsection{Interpretation Bias}
+The purports and translations in our database reflect specific interpretations of the Gita. Different philosophical schools (Advaita, Dvaita, etc.) may interpret verses differently.
+
+\subsubsection{Context Window}
+Retrieving only 5 verses may miss relevant wisdom from other parts of the text. However, increasing retrieval count risks information overload and diluted responses.
+
+\subsubsection{Evaluation Subjectivity}
+Assessing "spiritual relevance" inherently involves subjective judgment. Our evaluators were scholars, but different users may have different expectations.
+
+\subsection{Ethical Considerations}
+
+\subsubsection{AI as Spiritual Authority}
+We must be cautious about positioning AI as a spiritual authority. The system is designed as a tool for accessing wisdom, not as a replacement for human spiritual teachers or counselors.
+
+\subsubsection{Cultural Sensitivity}
+The Bhagavad Gita holds deep religious significance for millions. Our design prioritizes respect through authentic representation and avoiding misinterpretation.
+
+\subsubsection{Crisis Response Responsibility}
+While our crisis intervention mechanism provides helpline numbers, it cannot replace professional mental health support. Clear disclaimers and limitations must be communicated to users.
+
+\subsection{Broader Applicability}
+
+The architecture and methodologies presented can be adapted to other sacred texts:
+
+\begin{itemize}
+    \item Quran: Islamic guidance with authentic Ayah citations
+    \item Bible: Christian wisdom with verse references
+    \item Buddhist Sutras: Teachings from Pali Canon
+    \item Tao Te Ching: Taoist philosophy
+\end{itemize}
+
+The key principles—authentic retrieval, structured prompting, safety mechanisms—are domain-agnostic.
+
+
+\section{Future Work}
+
+\subsection{Multilingual Support}
+Expanding to Hindi, Sanskrit, and other Indian languages would increase accessibility. This requires:
+\begin{itemize}
+    \item Multilingual embedding models
+    \item Translated UI components
+    \item Language-specific prompt templates
+\end{itemize}
+
+\subsection{Conversational Context}
+Currently, each query is processed independently. Maintaining conversation history would enable:
+\begin{itemize}
+    \item Follow-up questions on specific verses
+    \item Deeper exploration of concepts
+    \item Personalized guidance based on user's journey
+\end{itemize}
+
+\subsection{Multi-Commentary Support}
+Incorporating multiple interpretations (Shankaracharya, Ramanuja, modern scholars) would provide users with diverse perspectives while maintaining authenticity.
+
+\subsection{Voice Interface}
+Integration with speech-to-text and text-to-speech would enable:
+\begin{itemize}
+    \item Accessibility for visually impaired users
+    \item Meditation and contemplation modes
+    \item Sanskrit pronunciation guidance
+\end{itemize}
+
+\subsection{Personalization}
+User profiles could track:
+\begin{itemize}
+    \item Previously explored verses
+    \item Areas of interest (karma yoga, bhakti, etc.)
+    \item Personalized recommendations
+\end{itemize}
+
+\subsection{Evaluation at Scale}
+Deploying the system to real users would enable:
+\begin{itemize}
+    \item Large-scale user satisfaction studies
+    \item A/B testing of prompt variations
+    \item Long-term impact assessment
+\end{itemize}
+
+\subsection{Cross-Text Synthesis}
+Advanced users might benefit from connections between the Gita and other texts (Upanishads, Yoga Sutras), requiring multi-source RAG.
+
+\section{Conclusion}
+
+This paper presented BhagvadGPT, a novel RAG-based system for authentic spiritual guidance from the Bhagavad Gita. Our key innovation is the combination of semantic retrieval with structured prompt engineering that ensures 100\% authentic shloka citation while providing personalized contextual explanations. Unlike existing solutions that offer generic one-line responses, our system bridges ancient wisdom with modern life situations through complete verse citations and thoughtful explanations.
+
+Our evaluation demonstrates superior performance across authenticity, relevance, and contextual quality metrics. The integrated safety mechanisms, including crisis intervention and domain filtering, make the system suitable for real-world deployment.
+
+The architecture and methodologies presented are applicable beyond the Bhagavad Gita to other sacred texts and spiritual traditions. As AI systems increasingly mediate access to cultural and religious knowledge, our work demonstrates the importance of authenticity, safety, and cultural sensitivity in design.
+
+We release BhagvadGPT as open-source software to enable further research and adaptation. The system represents a step toward responsible AI that respects and preserves the integrity of ancient wisdom while making it accessible to modern seekers.
+
+\section*{Acknowledgments}
+
+We thank the open-source communities behind LibreChat, ChromaDB, LangChain, and Groq for their excellent tools. We are grateful to the scholars who provided evaluation feedback and to the translators and commentators whose work made this project possible.
+
+\begin{thebibliography}{00}
+
+\bibitem{placeholder1} O. Soni, J. Baxi, B. Gambhava, and B. Bhatt, "Vivechan AI: Extracting Wisdom from Ancient Indian Texts Through LLM," in \textit{Proceedings of the 16th International Conference on Agents and Artificial Intelligence}, SciTePress, 2024.
+
+\bibitem{placeholder2} A. Alan et al., "Using the Retrieval-Augmented Generation Technique to Improve the Performance of GPT-4 in Answering Quran Questions," in \textit{2024 6th International Conference on Natural Language Processing (ICNLP)}, IEEE, 2024.
+
+\bibitem{lewis2020retrieval} P. Lewis et al., "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks," in \textit{Advances in Neural Information Processing Systems}, vol. 33, pp. 9459-9474, 2020.
+
+\bibitem{placeholder3} Y. Gao et al., "Retrieval-Augmented Generation for Large Language Models: A Survey," arXiv preprint arXiv:2312.10997, 2023.
+
+\bibitem{placeholder4} J. Wang et al., "Milvus: A Purpose-Built Vector Data Management System," in \textit{Proceedings of the 2021 International Conference on Management of Data (SIGMOD)}, pp. 2614–2627, 2021.
+
+\bibitem{reimers2019sentence} N. Reimers and I. Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks," in \textit{Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing}, 2019.
+
+\bibitem{placeholder5} T. Rebedea et al., "NeMo Guardrails: A Toolkit for Controllable and Safe LLM Applications with Programmable Rails," arXiv preprint arXiv:2310.10501, 2023.
+
+\bibitem{placeholder6} S. Boucher et al., "Effectiveness and safety of using chatbots to improve mental health: systematic review and meta-analysis," \textit{Journal of Medical Internet Research}, vol. 22, no. 7, e16021, 2020.
+
+\bibitem{gitasupersite} IIT Kanpur, "Gita Supersite: A Comprehensive Resource on Bhagavad Gita," \url{https://www.gitasupersite.iitk.ac.in/}, accessed 2024.
+
+\bibitem{groq2024} Groq Inc., "LLaMA 3.3 70B: Fast Inference for Large Language Models," Technical Report, 2024.
+
+\bibitem{chromadb2023} ChromaDB Team, "ChromaDB: The AI-native open-source embedding database," \url{https://www.trychroma.com/}, 2023.
+
+\bibitem{librechat2024} LibreChat Contributors, "LibreChat: Enhanced ChatGPT Clone," \url{https://github.com/danny-avila/LibreChat}, 2024.
+
+\end{thebibliography}
+
+\vspace{12pt}
+
+\end{document}

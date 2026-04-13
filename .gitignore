@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# ChromaDB
+bhagvadgpt-backend/gita_knowledge_base/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build outputs
+BhagvadGPT-frontend/client/dist/
+BhagvadGPT-frontend/packages/*/dist/
+BhagvadGPT-frontend/api/dist/
+
+# Docker
+BhagvadGPT-frontend/meili_data*/
+BhagvadGPT-frontend/logs/
+BhagvadGPT-frontend/uploads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# LibreChat specific
+BhagvadGPT-frontend/.env
+BhagvadGPT-frontend/api/.env
+BhagvadGPT-frontend/client/.env
